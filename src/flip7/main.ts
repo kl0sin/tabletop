@@ -1,11 +1,18 @@
 import './style.css';
 import type { Game } from './game';
-import { createGame } from './game';
+import { addRound, createGame, isFinished, undoLastRound } from './game';
 import * as store from './storage';
 import { toast } from './views/dom';
 import { renderStart } from './views/start';
+import { renderTable } from './views/table';
+import { newDraft, renderRound, type RoundDraft } from './views/round';
 
-export type Screen = { name: 'start' } | { name: 'table'; game: Game } | { name: 'history' };
+export type Screen =
+  | { name: 'start' }
+  | { name: 'table'; game: Game }
+  | { name: 'round'; game: Game; draft: RoundDraft }
+  | { name: 'end'; game: Game }
+  | { name: 'history' };
 
 const app = document.querySelector<HTMLElement>('#app')!;
 let screen: Screen = initialScreen();
@@ -27,7 +34,8 @@ function go(next: Screen): void {
 
 function render(): void {
   app.innerHTML = '';
-  switch (screen.name) {
+  const s = screen;
+  switch (s.name) {
     case 'start':
       renderStart(app, {
         lastPlayers: store.loadLastPlayers(),
@@ -40,9 +48,50 @@ function render(): void {
         onHistory: () => go({ name: 'history' }),
       });
       break;
+
     case 'table':
-      app.textContent = `Tabela – ${screen.game.players.map((p) => p.name).join(', ')}`;
+      renderTable(app, {
+        game: s.game,
+        onEndRound: () => go({ name: 'round', game: s.game, draft: newDraft() }),
+        onUndo: () => {
+          const game = undoLastRound(s.game);
+          persist(game);
+          go({ name: 'table', game });
+        },
+        onNewGame: () => {
+          if (confirm('Porzucić bieżącą grę? Nie trafi do historii.')) {
+            store.clearCurrent();
+            go({ name: 'start' });
+          }
+        },
+        onHistory: () => go({ name: 'history' }),
+      });
       break;
+
+    case 'round':
+      renderRound(app, {
+        game: s.game,
+        draft: s.draft,
+        onChange: (draft) => go({ name: 'round', game: s.game, draft }),
+        onCancel: () => go({ name: 'table', game: s.game }),
+        onComplete: (scores) => {
+          const game = addRound(s.game, scores);
+          if (isFinished(game)) {
+            if (!store.archiveGame(game)) toast('Nie udało się zapisać do historii');
+            store.clearCurrent();
+            go({ name: 'end', game });
+          } else {
+            persist(game);
+            go({ name: 'table', game });
+          }
+        },
+      });
+      break;
+
+    case 'end':
+      app.textContent = `Koniec – wygrywa ${s.game.players.find((p) => p.id === s.game.winnerId)?.name}`;
+      break;
+
     case 'history':
       app.textContent = 'Historia';
       break;
