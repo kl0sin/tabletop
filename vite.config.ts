@@ -9,6 +9,7 @@ export default defineConfig({
       input: {
         dashboard: page('index.html'),
         picker: page('picker/index.html'),
+        flip7: page('flip7/index.html'),
       },
     },
   },
