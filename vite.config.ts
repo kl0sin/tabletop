@@ -8,6 +8,7 @@ export default defineConfig({
     rolldownOptions: {
       input: {
         dashboard: page('index.html'),
+        picker: page('picker/index.html'),
       },
     },
   },
