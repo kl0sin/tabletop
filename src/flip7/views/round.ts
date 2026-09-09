@@ -80,14 +80,26 @@ export function renderRound(root: HTMLElement, props: RoundProps): void {
   root.querySelector('[data-action=confirm]')!.addEventListener('click', () => {
     const scores = { ...draft.scores, [player.id]: value };
     if (draft.index + 1 < game.players.length) {
-      props.onChange({ ...draft, index: draft.index + 1, scores, mode: 'keypad', input: '', numbers: [], modifiers: [] });
+      props.onChange({
+        ...draft,
+        index: draft.index + 1,
+        scores,
+        mode: 'keypad',
+        input: '',
+        numbers: [],
+        modifiers: [],
+      });
     } else {
       props.onComplete(scores);
     }
   });
 }
 
-function renderKeypad(pad: HTMLElement, draft: RoundDraft, onChange: (d: RoundDraft) => void): void {
+function renderKeypad(
+  pad: HTMLElement,
+  draft: RoundDraft,
+  onChange: (d: RoundDraft) => void,
+): void {
   const keys = ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'Bust', '0', '⌫'];
   pad.className = 'keypad';
   pad.innerHTML = keys.map((k) => `<button class="btn" data-key="${k}">${k}</button>`).join('');

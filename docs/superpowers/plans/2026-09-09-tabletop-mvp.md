@@ -81,9 +81,11 @@ tabletop/
 ### Task 1: Project scaffold
 
 **Files:**
+
 - Create: `package.json`, `tsconfig.json`, `vite.config.ts`, `.prettierrc`, `.gitignore`, `index.html`
 
 **Interfaces:**
+
 - Produces: npm scripts `dev`, `build`, `preview`, `test`, `test:watch`, `format`; Vite config with `base: '/tabletop/'` and three HTML inputs (picker/flip7 entries are added to the input map now but their files are created in later tasks — so for this task only the dashboard input is listed; later tasks add theirs).
 
 - [ ] **Step 1: Create package.json and install dependencies**
@@ -156,11 +158,13 @@ export default defineConfig({
 - [ ] **Step 4: Create .prettierrc and .gitignore**
 
 `.prettierrc`:
+
 ```json
 { "singleQuote": true, "printWidth": 100, "semi": true }
 ```
 
 `.gitignore`:
+
 ```
 node_modules
 dist
@@ -213,6 +217,7 @@ git commit -m "chore: scaffold Vite multi-page project"
 ### Task 2: CLAUDE.md and README
 
 **Files:**
+
 - Create: `CLAUDE.md`, `README.md`
 
 - [ ] **Step 1: Write CLAUDE.md**
@@ -291,9 +296,11 @@ git commit -m "docs: add CLAUDE.md and README"
 ### Task 3: Shared storage wrapper
 
 **Files:**
+
 - Create: `src/shared/storage.ts`, `src/shared/storage.test.ts`
 
 **Interfaces:**
+
 - Produces:
   - `read<T>(key: string): T | null`
   - `write<T>(key: string, value: T): boolean`
@@ -303,6 +310,7 @@ git commit -m "docs: add CLAUDE.md and README"
 - [ ] **Step 1: Write the failing tests**
 
 `src/shared/storage.test.ts`:
+
 ```ts
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { has, read, remove, write } from './storage';
@@ -432,10 +440,12 @@ git commit -m "feat(shared): add exception-safe localStorage wrapper"
 ### Task 4: Theme, game registry, dashboard
 
 **Files:**
+
 - Create: `src/shared/theme.css`, `src/shared/games.ts`, `src/dashboard/style.css`
 - Modify: `src/dashboard/main.ts`
 
 **Interfaces:**
+
 - Consumes: `has` from `src/shared/storage.ts`
 - Produces: `GameEntry` interface and `games: GameEntry[]` in `src/shared/games.ts`
 
@@ -651,6 +661,7 @@ git commit -m "feat(dashboard): render instance tiles from registry"
 ### Task 5: GitHub Pages deploy workflow
 
 **Files:**
+
 - Create: `.github/workflows/deploy.yml`
 
 - [ ] **Step 1: Write the workflow**
@@ -715,16 +726,19 @@ Tell the user: in GitHub → repo **Settings → Pages → Build and deployment 
 ### Task 6: Finger picker
 
 **Files:**
+
 - Create: `picker/index.html`, `src/picker/main.ts`, `src/picker/random.ts`, `src/picker/random.test.ts`, `src/picker/style.css`
 - Modify: `vite.config.ts` (add `picker` input)
 
 **Interfaces:**
+
 - Consumes: `src/shared/theme.css`
 - Produces: `randomIndex(n: number): number`, `shuffle<T>(items: T[]): T[]` in `src/picker/random.ts`
 
 - [ ] **Step 1: Write failing tests for random.ts**
 
 `src/picker/random.test.ts`:
+
 ```ts
 import { describe, expect, it } from 'vitest';
 import { randomIndex, shuffle } from './random';
@@ -832,6 +846,7 @@ Expected: 5 passed.
 - [ ] **Step 6: Add picker input to vite.config.ts**
 
 In `build.rolldownOptions.input` add:
+
 ```ts
         picker: page('picker/index.html'),
 ```
@@ -1017,7 +1032,10 @@ function rearm(): void {
     phase = 'armed';
     stage.classList.add('is-armed');
     stage.style.setProperty('--pulse', '0.9s');
-    fastTimer = window.setTimeout(() => stage.style.setProperty('--pulse', '0.4s'), FAST_PULSE_AFTER_MS);
+    fastTimer = window.setTimeout(
+      () => stage.style.setProperty('--pulse', '0.4s'),
+      FAST_PULSE_AFTER_MS,
+    );
     stableTimer = window.setTimeout(startPick, STABLE_MS);
   } else {
     phase = 'idle';
@@ -1034,14 +1052,17 @@ function startPick(): void {
   order.forEach((f, i) => {
     window.setTimeout(() => f.el.classList.add('is-out'), ELIMINATE_STEP_MS * (i + 1));
   });
-  window.setTimeout(() => {
-    winner.el.classList.add('is-winner');
-    stage.style.background = winner.color;
-    navigator.vibrate?.([80, 60, 200]);
-    phase = 'result';
-    updateText();
-    if (activePointers.size === 0) reset();
-  }, ELIMINATE_STEP_MS * (order.length + 1));
+  window.setTimeout(
+    () => {
+      winner.el.classList.add('is-winner');
+      stage.style.background = winner.color;
+      navigator.vibrate?.([80, 60, 200]);
+      phase = 'result';
+      updateText();
+      if (activePointers.size === 0) reset();
+    },
+    ELIMINATE_STEP_MS * (order.length + 1),
+  );
 }
 
 function reset(): void {
@@ -1116,6 +1137,7 @@ for (const type of ['touchstart', 'touchmove'] as const) {
 
 Run: `npm run dev` and open the LAN URL + `/tabletop/picker/` on a phone.
 Expected:
+
 - One finger: colored ring follows it, hint says "Potrzeba co najmniej 2 palców", counter "Palców: 1".
 - Two or more fingers held still: rings pulse, faster after ~1s, after 2s rings vanish one by one, last one grows and the background takes its color; phone vibrates (Android).
 - Lifting a finger during pulsing restarts the wait.
@@ -1136,9 +1158,11 @@ git commit -m "feat(picker): finger-based who-starts picker"
 ### Task 7: Flip 7 scoring
 
 **Files:**
+
 - Create: `src/flip7/scoring.ts`, `src/flip7/scoring.test.ts`
 
 **Interfaces:**
+
 - Produces:
   - `type Modifier = '+2' | '+4' | '+6' | '+8' | '+10' | 'x2'`
   - `const NUMBER_CARDS: readonly number[]` (0..12)
@@ -1149,6 +1173,7 @@ git commit -m "feat(picker): finger-based who-starts picker"
 - [ ] **Step 1: Write the failing tests**
 
 `src/flip7/scoring.test.ts`:
+
 ```ts
 import { describe, expect, it } from 'vitest';
 import { MODIFIERS, NUMBER_CARDS, scoreRound } from './scoring';
@@ -1259,9 +1284,11 @@ git commit -m "feat(flip7): pure round scoring"
 ### Task 8: Flip 7 game state
 
 **Files:**
+
 - Create: `src/flip7/game.ts`, `src/flip7/game.test.ts`
 
 **Interfaces:**
+
 - Produces:
   - `interface Player { id: string; name: string }`
   - `interface Round { scores: Record<string, number> }`
@@ -1277,6 +1304,7 @@ git commit -m "feat(flip7): pure round scoring"
 - [ ] **Step 1: Write the failing tests**
 
 `src/flip7/game.test.ts`:
+
 ```ts
 import { describe, expect, it } from 'vitest';
 import {
@@ -1501,9 +1529,11 @@ git commit -m "feat(flip7): pure game state with rounds, dealer rotation and win
 ### Task 9: Flip 7 storage
 
 **Files:**
+
 - Create: `src/flip7/storage.ts`, `src/flip7/storage.test.ts`
 
 **Interfaces:**
+
 - Consumes: `read`, `write`, `remove` from `src/shared/storage.ts`; `Game` from `./game`
 - Produces:
   - `loadCurrent(): Game | null`, `saveCurrent(game: Game): boolean`, `clearCurrent(): void`
@@ -1513,6 +1543,7 @@ git commit -m "feat(flip7): pure game state with rounds, dealer rotation and win
 - [ ] **Step 1: Write the failing tests**
 
 `src/flip7/storage.test.ts`:
+
 ```ts
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createGame } from './game';
@@ -1688,10 +1719,12 @@ git commit -m "feat(flip7): persistence for current game, history and last playe
 ### Task 10: Flip 7 shell, DOM helpers and start screen
 
 **Files:**
+
 - Create: `flip7/index.html`, `src/flip7/main.ts`, `src/flip7/style.css`, `src/flip7/views/dom.ts`, `src/flip7/views/dom.test.ts`, `src/flip7/views/start.ts`
 - Modify: `vite.config.ts` (add `flip7` input)
 
 **Interfaces:**
+
 - Consumes: `createGame`, `Game` from `../game`; storage functions from `../storage`
 - Produces:
   - `esc(s: string): string`, `toast(message: string): void` in `views/dom.ts`
@@ -1701,13 +1734,16 @@ git commit -m "feat(flip7): persistence for current game, history and last playe
 - [ ] **Step 1: Write failing test for esc()**
 
 `src/flip7/views/dom.test.ts`:
+
 ```ts
 import { describe, expect, it } from 'vitest';
 import { esc } from './dom';
 
 describe('esc', () => {
   it('escapes HTML special characters', () => {
-    expect(esc(`<b>"Ala" & 'Ola'</b>`)).toBe('&lt;b&gt;&quot;Ala&quot; &amp; &#39;Ola&#39;&lt;/b&gt;');
+    expect(esc(`<b>"Ala" & 'Ola'</b>`)).toBe(
+      '&lt;b&gt;&quot;Ala&quot; &amp; &#39;Ola&#39;&lt;/b&gt;',
+    );
   });
   it('leaves plain text alone', () => {
     expect(esc('Żółć 7')).toBe('Żółć 7');
@@ -1749,6 +1785,7 @@ Run: `npm test -- src/flip7/views/dom.test.ts` → 2 passed.
 - [ ] **Step 3: Create flip7/index.html and register the input**
 
 `flip7/index.html`:
+
 ```html
 <!doctype html>
 <html lang="pl">
@@ -1766,6 +1803,7 @@ Run: `npm test -- src/flip7/views/dom.test.ts` → 2 passed.
 ```
 
 In `vite.config.ts` `build.rolldownOptions.input` add:
+
 ```ts
         flip7: page('flip7/index.html'),
 ```
@@ -2290,10 +2328,12 @@ git commit -m "feat(flip7): app shell, styles and start screen"
 ### Task 11: Flip 7 table and keypad round entry
 
 **Files:**
+
 - Create: `src/flip7/views/table.ts`, `src/flip7/views/round.ts`
 - Modify: `src/flip7/main.ts`
 
 **Interfaces:**
+
 - Consumes: `Game`, `totals`, `currentDealer`, `addRound`, `undoLastRound`, `isFinished` from `../game`; `Modifier`, `scoreRound` from `../scoring`; `esc` from `./dom`
 - Produces:
   - `renderTable(root, props: TableProps)` with `TableProps { game: Game; onEndRound(): void; onUndo(): void; onNewGame(): void; onHistory(): void }`
@@ -2460,14 +2500,26 @@ export function renderRound(root: HTMLElement, props: RoundProps): void {
   root.querySelector('[data-action=confirm]')!.addEventListener('click', () => {
     const scores = { ...draft.scores, [player.id]: value };
     if (draft.index + 1 < game.players.length) {
-      props.onChange({ ...draft, index: draft.index + 1, scores, mode: 'keypad', input: '', numbers: [], modifiers: [] });
+      props.onChange({
+        ...draft,
+        index: draft.index + 1,
+        scores,
+        mode: 'keypad',
+        input: '',
+        numbers: [],
+        modifiers: [],
+      });
     } else {
       props.onComplete(scores);
     }
   });
 }
 
-function renderKeypad(pad: HTMLElement, draft: RoundDraft, onChange: (d: RoundDraft) => void): void {
+function renderKeypad(
+  pad: HTMLElement,
+  draft: RoundDraft,
+  onChange: (d: RoundDraft) => void,
+): void {
   const keys = ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'Bust', '0', '⌫'];
   pad.className = 'keypad';
   pad.innerHTML = keys.map((k) => `<button class="btn" data-key="${k}">${k}</button>`).join('');
@@ -2482,7 +2534,11 @@ function renderKeypad(pad: HTMLElement, draft: RoundDraft, onChange: (d: RoundDr
 }
 
 // Replaced with the real card picker in Task 12.
-function renderCards(pad: HTMLElement, _draft: RoundDraft, _onChange: (d: RoundDraft) => void): void {
+function renderCards(
+  pad: HTMLElement,
+  _draft: RoundDraft,
+  _onChange: (d: RoundDraft) => void,
+): void {
   pad.className = '';
   pad.textContent = 'Wybór kart – wkrótce';
 }
@@ -2600,6 +2656,7 @@ render();
 
 Run: `npm run dev`, open `/tabletop/flip7/`, start a game with 3 players, target 30.
 Expected:
+
 - Table shows three rows, first player marked "rozdaje", "Cofnij rundę" disabled.
 - "Zakończ rundę": keypad, "Dalej" walks through players, "Wstecz" returns to the previous player with their value, "Anuluj" on the first player returns to the table.
 - Entering 10/5/0 then finishing: table sums, dealer moves to the second player, the "Rundy" details list the round, undo works and re-enables correctly.
@@ -2618,14 +2675,17 @@ git commit -m "feat(flip7): game table and keypad round entry"
 ### Task 12: Flip 7 card picker mode
 
 **Files:**
+
 - Modify: `src/flip7/views/round.ts` (replace the `renderCards` stub)
 
 **Interfaces:**
+
 - Consumes: `NUMBER_CARDS`, `MODIFIERS`, `Modifier` from `../scoring`
 
 - [ ] **Step 1: Replace the renderCards stub**
 
 In `src/flip7/views/round.ts` change the scoring import to:
+
 ```ts
 import { MODIFIERS, NUMBER_CARDS, scoreRound, type Modifier } from '../scoring';
 ```
@@ -2668,6 +2728,7 @@ function renderCards(pad: HTMLElement, draft: RoundDraft, onChange: (d: RoundDra
 - [ ] **Step 2: Verify in the browser**
 
 In a round, tap "Policz z kart":
+
 - Tiles 0–12 and modifiers appear; tapping toggles them (teal for numbers, purple for modifiers).
 - The big value updates live: 5+6 → 11, add x2 → 22, add +4 → 26.
 - Selecting seven numbers shows "Flip 7! +15" and adds 15.
@@ -2686,10 +2747,12 @@ git commit -m "feat(flip7): compute round score from picked cards"
 ### Task 13: Flip 7 end screen and history
 
 **Files:**
+
 - Create: `src/flip7/views/end.ts`, `src/flip7/views/history.ts`
 - Modify: `src/flip7/main.ts`
 
 **Interfaces:**
+
 - Consumes: `standings`, `Game` from `../game`; `esc` from `./dom`
 - Produces:
   - `renderEnd(root, props: EndProps)` with `EndProps { game: Game; onRematch(): void; onHome(): void }`
@@ -2796,6 +2859,7 @@ export function renderHistory(root: HTMLElement, props: HistoryProps): void {
 - [ ] **Step 3: Wire into main.ts**
 
 Add imports:
+
 ```ts
 import { renderEnd } from './views/end';
 import { renderHistory } from './views/history';
@@ -2851,12 +2915,14 @@ git commit -m "feat(flip7): end screen, rematch and history"
 ### Task 14: PWA manifest, icons, offline
 
 **Files:**
+
 - Create: `public/icon.svg`, generated PNGs in `public/`
 - Modify: `vite.config.ts`, `index.html`, `picker/index.html`, `flip7/index.html`
 
 - [ ] **Step 1: Create the source icon**
 
 `public/icon.svg`:
+
 ```svg
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
   <rect width="512" height="512" rx="96" fill="#0f1115"/>
@@ -2869,9 +2935,11 @@ git commit -m "feat(flip7): end screen, rematch and history"
 - [ ] **Step 2: Generate PNG icons**
 
 Run:
+
 ```bash
 npx --yes @vite-pwa/assets-generator --preset minimal-2023 public/icon.svg
 ```
+
 Expected: `public/pwa-64x64.png`, `public/pwa-192x192.png`, `public/pwa-512x512.png`, `public/maskable-icon-512x512.png`, `public/apple-touch-icon-180x180.png`, `public/favicon.ico` created. If the generator fails, fall back to `npx --yes sharp-cli -i public/icon.svg -o public/pwa-512x512.png resize 512 512` and repeat for 192 and 180 (`apple-touch-icon-180x180.png`); skip the maskable variant.
 
 - [ ] **Step 3: Configure vite-plugin-pwa**
@@ -2914,12 +2982,13 @@ import { VitePWA } from 'vite-plugin-pwa';
 - [ ] **Step 4: Add head tags to all three HTML entries**
 
 Inside `<head>` of `index.html`, `picker/index.html`, `flip7/index.html` add:
+
 ```html
-    <link rel="icon" href="/tabletop/favicon.ico" sizes="48x48" />
-    <link rel="icon" href="/tabletop/icon.svg" type="image/svg+xml" />
-    <link rel="apple-touch-icon" href="/tabletop/apple-touch-icon-180x180.png" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<link rel="icon" href="/tabletop/favicon.ico" sizes="48x48" />
+<link rel="icon" href="/tabletop/icon.svg" type="image/svg+xml" />
+<link rel="apple-touch-icon" href="/tabletop/apple-touch-icon-180x180.png" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 ```
 
 Note: Vite dev server serves `public/` under the base path too, so `/tabletop/favicon.ico` works in both dev and prod.
@@ -2928,6 +2997,7 @@ Note: Vite dev server serves `public/` under the base path too, so `/tabletop/fa
 
 Run: `npm run build && npm run preview`, open the preview URL + `/tabletop/`.
 Expected:
+
 - `dist/manifest.webmanifest` and `dist/sw.js` exist; `dist/index.html`, `dist/picker/index.html`, `dist/flip7/index.html` each contain a `registerSW` script tag or an inline registration snippet (`grep -l registerSW dist/index.html dist/picker/index.html dist/flip7/index.html`).
 - In Chrome DevTools → Application → Manifest: no errors, icons listed. Service worker activated.
 - Toggle "Offline" in DevTools Network and reload `/tabletop/`, `/tabletop/picker/`, `/tabletop/flip7/`: all load.
@@ -2944,6 +3014,7 @@ git commit -m "feat: PWA manifest, icons and offline caching"
 ### Task 15: Format, final checks and phone QA
 
 **Files:**
+
 - Modify: any file Prettier touches
 
 - [ ] **Step 1: Format and run everything**
@@ -2953,7 +3024,9 @@ npm run format
 npm test
 npm run build
 ```
+
 Expected: all tests pass, build succeeds. Commit formatting only if it changed files:
+
 ```bash
 git add -A && git commit -m "style: prettier"
 ```

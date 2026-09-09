@@ -82,7 +82,10 @@ function rearm(): void {
     phase = 'armed';
     stage.classList.add('is-armed');
     stage.style.setProperty('--pulse', '0.9s');
-    fastTimer = window.setTimeout(() => stage.style.setProperty('--pulse', '0.4s'), FAST_PULSE_AFTER_MS);
+    fastTimer = window.setTimeout(
+      () => stage.style.setProperty('--pulse', '0.4s'),
+      FAST_PULSE_AFTER_MS,
+    );
     stableTimer = window.setTimeout(startPick, STABLE_MS);
   } else {
     phase = 'idle';
@@ -99,14 +102,17 @@ function startPick(): void {
   order.forEach((f, i) => {
     window.setTimeout(() => f.el.classList.add('is-out'), ELIMINATE_STEP_MS * (i + 1));
   });
-  window.setTimeout(() => {
-    winner.el.classList.add('is-winner');
-    stage.style.background = winner.color;
-    navigator.vibrate?.([80, 60, 200]);
-    phase = 'result';
-    updateText();
-    if (activePointers.size === 0) resultTimer = window.setTimeout(reset, RESULT_HOLD_MS);
-  }, ELIMINATE_STEP_MS * (order.length + 1));
+  window.setTimeout(
+    () => {
+      winner.el.classList.add('is-winner');
+      stage.style.background = winner.color;
+      navigator.vibrate?.([80, 60, 200]);
+      phase = 'result';
+      updateText();
+      if (activePointers.size === 0) resultTimer = window.setTimeout(reset, RESULT_HOLD_MS);
+    },
+    ELIMINATE_STEP_MS * (order.length + 1),
+  );
 }
 
 function reset(): void {

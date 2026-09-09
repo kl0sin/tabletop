@@ -81,11 +81,11 @@ interface GameEntry {
   id: string;
   name: string;
   description: string;
-  path: string;              // np. 'flip7/'
-  icon: string;              // emoji lub ścieżka do SVG
+  path: string; // np. 'flip7/'
+  icon: string; // emoji lub ścieżka do SVG
   hasActiveGame?: () => boolean;
 }
-export const games: GameEntry[]
+export const games: GameEntry[];
 ```
 
 `hasActiveGame` dla Flip 7 sprawdza tylko istnienie klucza `flip7:current` –
@@ -141,16 +141,21 @@ Czysta funkcja, bez DOM, pokryta testami jednostkowymi.
 ### Model gry (moduł `game.ts`)
 
 ```ts
-interface Player { id: string; name: string }
-interface Round { scores: Record<playerId, number> }
+interface Player {
+  id: string;
+  name: string;
+}
+interface Round {
+  scores: Record<playerId, number>;
+}
 interface Game {
   version: 1;
   id: string;
-  createdAt: string;         // ISO
+  createdAt: string; // ISO
   finishedAt?: string;
   players: Player[];
-  target: number;            // domyślnie 200
-  dealerIndex: number;       // rotuje co rundę
+  target: number; // domyślnie 200
+  dealerIndex: number; // rotuje co rundę
   rounds: Round[];
   winnerId?: string;
 }
@@ -174,9 +179,9 @@ zamknięciu rundy ktokolwiek ma ≥ `target`. Remis: gra trwa dalej.
 2. **Tabela gry**: wiersz per gracz z sumą; numer rundy; wyróżniony dealer.
    Przyciski "Zakończ rundę" i "Cofnij ostatnią rundę".
 3. **Wpisywanie rundy**: gracz po graczu. Domyślnie duża klawiatura numeryczna
-   + przycisk "Bust" (0). Przycisk "Policz z kart" otwiera wybór kart (kafelki
-   0–12 i modyfikatory); wynik liczony na żywo z `scoring.ts`, widoczny bust
-   i bonus; wartość zatwierdzana ręcznie. Po ostatnim graczu → `addRound`.
+   - przycisk "Bust" (0). Przycisk "Policz z kart" otwiera wybór kart (kafelki
+     0–12 i modyfikatory); wynik liczony na żywo z `scoring.ts`, widoczny bust
+     i bonus; wartość zatwierdzana ręcznie. Po ostatnim graczu → `addRound`.
 4. **Koniec gry**: ekran zwycięzcy z tabelą końcową, gra trafia do historii,
    przycisk "Rewanż" (ten sam skład, nowa gra).
 5. **Historia**: lista zakończonych gier (data, zwycięzca, wyniki), usuwanie wpisu.
