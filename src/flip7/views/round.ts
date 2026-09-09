@@ -1,5 +1,5 @@
 import type { Game } from '../game';
-import { scoreRound, type Modifier } from '../scoring';
+import { MODIFIERS, NUMBER_CARDS, scoreRound, type Modifier } from '../scoring';
 import { esc } from './dom';
 
 export interface RoundDraft {
@@ -101,8 +101,33 @@ function renderKeypad(pad: HTMLElement, draft: RoundDraft, onChange: (d: RoundDr
   });
 }
 
-// Replaced with the real card picker in Task 12.
-function renderCards(pad: HTMLElement, _draft: RoundDraft, _onChange: (d: RoundDraft) => void): void {
-  pad.className = '';
-  pad.textContent = 'Wybór kart – wkrótce';
+function renderCards(pad: HTMLElement, draft: RoundDraft, onChange: (d: RoundDraft) => void): void {
+  pad.className = 'cards';
+  const numberTiles = NUMBER_CARDS.map(
+    (n) =>
+      `<button class="card ${draft.numbers.includes(n) ? 'is-on' : ''}" data-number="${n}">${n}</button>`,
+  );
+  const modifierTiles = MODIFIERS.map(
+    (m) =>
+      `<button class="card card--mod ${draft.modifiers.includes(m) ? 'is-on' : ''}" data-modifier="${m}">${m}</button>`,
+  );
+  pad.innerHTML = [...numberTiles, ...modifierTiles].join('');
+
+  pad.addEventListener('click', (e) => {
+    const btn = (e.target as HTMLElement).closest<HTMLElement>('.card');
+    if (!btn) return;
+    if (btn.dataset.number !== undefined) {
+      const n = Number(btn.dataset.number);
+      const numbers = draft.numbers.includes(n)
+        ? draft.numbers.filter((x) => x !== n)
+        : [...draft.numbers, n];
+      onChange({ ...draft, numbers });
+    } else if (btn.dataset.modifier !== undefined) {
+      const m = btn.dataset.modifier as Modifier;
+      const modifiers = draft.modifiers.includes(m)
+        ? draft.modifiers.filter((x) => x !== m)
+        : [...draft.modifiers, m];
+      onChange({ ...draft, modifiers });
+    }
+  });
 }
