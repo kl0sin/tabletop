@@ -42,6 +42,14 @@ describe('current game', () => {
     localStorage.setItem('flip7:current', JSON.stringify({ version: 99 }));
     expect(loadCurrent()).toBeNull();
   });
+
+  it('ignores data with a non-string id', () => {
+    localStorage.setItem(
+      'flip7:current',
+      JSON.stringify({ version: 1, id: 5, players: [], rounds: [] }),
+    );
+    expect(loadCurrent()).toBeNull();
+  });
 });
 
 describe('history', () => {

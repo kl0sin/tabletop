@@ -38,6 +38,7 @@ button,
 input {
   font: inherit;
   color: inherit;
+  touch-action: manipulation;
 }
 
 a {
@@ -299,6 +300,15 @@ a {
 
 .card--mod.is-on {
   background: var(--f7-purple);
+}
+
+.card.is-dup {
+  background: var(--f7-coral);
+}
+
+.card__dup {
+  font-size: 11px;
+  margin-left: 4px;
 }
 
 /* end + history */

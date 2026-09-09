@@ -115,10 +115,12 @@ function renderKeypad(
 
 function renderCards(pad: HTMLElement, draft: RoundDraft, onChange: (d: RoundDraft) => void): void {
   pad.className = 'cards';
-  const numberTiles = NUMBER_CARDS.map(
-    (n) =>
-      `<button class="card ${draft.numbers.includes(n) ? 'is-on' : ''}" data-number="${n}">${n}</button>`,
-  );
+  const numberTiles = NUMBER_CARDS.map((n) => {
+    const count = draft.numbers.filter((x) => x === n).length;
+    const isOn = count >= 1;
+    const isDup = count >= 2;
+    return `<button class="card ${isOn ? 'is-on' : ''} ${isDup ? 'is-dup' : ''}" data-number="${n}">${n}${isDup ? '<span class="card__dup">×2</span>' : ''}</button>`;
+  });
   const modifierTiles = MODIFIERS.map(
     (m) =>
       `<button class="card card--mod ${draft.modifiers.includes(m) ? 'is-on' : ''}" data-modifier="${m}">${m}</button>`,
@@ -130,9 +132,11 @@ function renderCards(pad: HTMLElement, draft: RoundDraft, onChange: (d: RoundDra
     if (!btn) return;
     if (btn.dataset.number !== undefined) {
       const n = Number(btn.dataset.number);
-      const numbers = draft.numbers.includes(n)
-        ? draft.numbers.filter((x) => x !== n)
-        : [...draft.numbers, n];
+      const count = draft.numbers.filter((x) => x === n).length;
+      // Cycle 0 -> 1 -> 2 -> 0: a second copy represents the duplicate that busted the player.
+      const others = draft.numbers.filter((x) => x !== n);
+      const nextCount = (count + 1) % 3;
+      const numbers = [...others, ...Array<number>(nextCount).fill(n)];
       onChange({ ...draft, numbers });
     } else if (btn.dataset.modifier !== undefined) {
       const m = btn.dataset.modifier as Modifier;

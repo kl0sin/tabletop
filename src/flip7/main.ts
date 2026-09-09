@@ -29,8 +29,9 @@ function persist(game: Game): void {
 }
 
 function go(next: Screen): void {
+  const changed = next.name !== screen.name;
   screen = next;
-  window.scrollTo(0, 0);
+  if (changed) window.scrollTo(0, 0);
   render();
 }
 
@@ -79,8 +80,12 @@ function render(): void {
         onComplete: (scores) => {
           const game = addRound(s.game, scores);
           if (isFinished(game)) {
-            if (!store.archiveGame(game)) toast('Nie udało się zapisać do historii');
-            store.clearCurrent();
+            if (store.archiveGame(game)) {
+              store.clearCurrent();
+            } else {
+              toast('Nie udało się zapisać do historii');
+              persist(game);
+            }
             go({ name: 'end', game });
           } else {
             persist(game);

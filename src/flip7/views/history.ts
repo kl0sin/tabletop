@@ -17,10 +17,12 @@ export function renderHistory(root: HTMLElement, props: HistoryProps): void {
         .map((s) => `${esc(s.player.name)} ${s.total}`)
         .join(' · ');
       const when = g.finishedAt ?? g.createdAt;
+      const d = new Date(when);
+      const dateText = Number.isNaN(d.getTime()) ? '—' : dateFormat.format(d);
       return `
         <li class="history__item" data-id="${g.id}">
           <div class="history__meta">
-            <span>${dateFormat.format(new Date(when))}</span>
+            <span>${dateText}</span>
             <button class="link" data-delete>Usuń</button>
           </div>
           <strong>${winner ? `Wygrał(a) ${esc(winner.name)}` : 'Bez zwycięzcy'}</strong>

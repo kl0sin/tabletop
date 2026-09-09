@@ -22,7 +22,9 @@ function isGame(value: unknown): value is Game {
     value !== null &&
     (value as Game).version === 1 &&
     Array.isArray((value as Game).players) &&
-    Array.isArray((value as Game).rounds)
+    Array.isArray((value as Game).rounds) &&
+    typeof (value as Game).id === 'string' &&
+    typeof (value as Game).createdAt === 'string'
   );
 }
 
