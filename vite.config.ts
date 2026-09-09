@@ -33,6 +33,9 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg,png,ico}'],
+        // Multi-page app: disable the SPA navigation fallback so a controlled
+        // page is never answered with the dashboard's index.html.
+        navigateFallback: null,
       },
     }),
   ],
