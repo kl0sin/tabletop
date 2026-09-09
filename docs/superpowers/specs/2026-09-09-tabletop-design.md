@@ -174,7 +174,8 @@ zamknięciu rundy ktokolwiek ma ≥ `target`. Remis: gra trwa dalej.
 ### Ekrany
 
 1. **Start**: lista graczy (dodaj, usuń, zmień kolejność), próg (domyślnie 200),
-   przycisk "Graj". Jeśli istnieje `flip7:current` → pytanie "Kontynuować / Nowa".
+   przycisk "Graj". Jeśli istnieje `flip7:current`, aplikacja od razu otwiera tabelę
+   trwającej gry; "Nowa gra" (z potwierdzeniem) jest dostępna z tabeli.
    Link do historii.
 2. **Tabela gry**: wiersz per gracz z sumą; numer rundy; wyróżniony dealer.
    Przyciski "Zakończ rundę" i "Cofnij ostatnią rundę".
