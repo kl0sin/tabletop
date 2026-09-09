@@ -26,6 +26,7 @@ const COLORS = [
 const STABLE_MS = 2000; // no finger added/removed for this long → start picking
 const FAST_PULSE_AFTER_MS = 1200; // switch to faster pulse partway through the wait
 const ELIMINATE_STEP_MS = 350;
+const RESULT_HOLD_MS = 1500; // keep the winner reveal on screen before auto-resetting
 
 const stage = document.querySelector<HTMLElement>('#stage')!;
 const hint = document.querySelector<HTMLElement>('#hint')!;
@@ -36,6 +37,7 @@ const activePointers = new Set<number>();
 let phase: Phase = 'idle';
 let stableTimer: number | undefined;
 let fastTimer: number | undefined;
+let resultTimer: number | undefined;
 
 function pickColor(): string {
   const used = new Set([...fingers.values()].map((f) => f.color));
@@ -68,6 +70,7 @@ function updateText(): void {
 function clearTimers(): void {
   window.clearTimeout(stableTimer);
   window.clearTimeout(fastTimer);
+  window.clearTimeout(resultTimer);
   stage.classList.remove('is-armed');
   stage.style.removeProperty('--pulse');
 }
@@ -102,7 +105,7 @@ function startPick(): void {
     navigator.vibrate?.([80, 60, 200]);
     phase = 'result';
     updateText();
-    if (activePointers.size === 0) reset();
+    if (activePointers.size === 0) resultTimer = window.setTimeout(reset, RESULT_HOLD_MS);
   }, ELIMINATE_STEP_MS * (order.length + 1));
 }
 
