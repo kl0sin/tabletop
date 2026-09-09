@@ -6,6 +6,8 @@ import { toast } from './views/dom';
 import { renderStart } from './views/start';
 import { renderTable } from './views/table';
 import { newDraft, renderRound, type RoundDraft } from './views/round';
+import { renderEnd } from './views/end';
+import { renderHistory } from './views/history';
 
 export type Screen =
   | { name: 'start' }
@@ -89,11 +91,29 @@ function render(): void {
       break;
 
     case 'end':
-      app.textContent = `Koniec – wygrywa ${s.game.players.find((p) => p.id === s.game.winnerId)?.name}`;
+      renderEnd(app, {
+        game: s.game,
+        onRematch: () => {
+          const game = createGame(
+            s.game.players.map((p) => p.name),
+            s.game.target,
+          );
+          persist(game);
+          go({ name: 'table', game });
+        },
+        onHome: () => go({ name: 'start' }),
+      });
       break;
 
     case 'history':
-      app.textContent = 'Historia';
+      renderHistory(app, {
+        games: store.loadHistory(),
+        onDelete: (id) => {
+          store.deleteFromHistory(id);
+          render();
+        },
+        onBack: () => go(initialScreen()),
+      });
       break;
   }
 }
