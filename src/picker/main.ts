@@ -26,7 +26,7 @@ const COLORS = [
 const STABLE_MS = 2000; // no finger added/removed for this long → start picking
 const FAST_PULSE_AFTER_MS = 1200; // switch to faster pulse partway through the wait
 const ELIMINATE_STEP_MS = 350;
-const RESULT_HOLD_MS = 1500; // keep the winner reveal on screen before auto-resetting
+const RESULT_HOLD_MS = 2500; // keep the winner reveal on screen before auto-resetting
 
 const stage = document.querySelector<HTMLElement>('#stage')!;
 const hint = document.querySelector<HTMLElement>('#hint')!;
@@ -109,7 +109,10 @@ function startPick(): void {
       navigator.vibrate?.([80, 60, 200]);
       phase = 'result';
       updateText();
-      if (activePointers.size === 0) resultTimer = window.setTimeout(reset, RESULT_HOLD_MS);
+      // Always arm the auto-reset: a pointer that never delivers pointerup/pointercancel
+      // would otherwise wedge the picker in `result` forever. If the last finger lifts
+      // before this fires, lift() calls reset(), which clears this timer via clearTimers().
+      resultTimer = window.setTimeout(reset, RESULT_HOLD_MS);
     },
     ELIMINATE_STEP_MS * (order.length + 1),
   );
@@ -125,6 +128,7 @@ function reset(): void {
 }
 
 stage.addEventListener('pointerdown', (e) => {
+  if ((e.target as HTMLElement).closest('.back')) return;
   if (e.pointerType === 'mouse' && e.button !== 0) return;
   activePointers.add(e.pointerId);
   if (phase === 'picking' || phase === 'result') return;
