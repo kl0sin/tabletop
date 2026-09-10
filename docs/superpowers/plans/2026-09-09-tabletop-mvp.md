@@ -12,7 +12,7 @@
 
 ## Global Constraints
 
-- Site base path is `/tabletop/`; final URL `https://mkklosin.github.io/tabletop/`.
+- Site base path is `/tabletop/`; final URL `https://kl0sin.github.io/tabletop/`.
 - Mobile-first: every interactive control at least 48px tall, layouts tested at 360px width.
 - UI copy in Polish (players are Polish speakers). Code, comments, commits in English.
 - Instances never import each other. Allowed shared imports: `src/shared/storage.ts`, `src/shared/games.ts`, and (dashboard + picker only) `src/shared/theme.css`.
@@ -269,7 +269,7 @@ Specs: `docs/superpowers/specs/`. Plans: `docs/superpowers/plans/`.
 # Tabletop
 
 Score counters and table tools for card games, built for phones. Hosted at
-https://mkklosin.github.io/tabletop/
+https://kl0sin.github.io/tabletop/
 
 - **Flip 7** – round-by-round score counter with history
 - **Kto zaczyna?** – put your fingers on the screen, one gets picked
@@ -719,7 +719,7 @@ git commit -m "ci: deploy to GitHub Pages on push to main"
 
 - [ ] **Step 3: Manual step for the repo owner (do not do this yourself)**
 
-Tell the user: in GitHub → repo **Settings → Pages → Build and deployment → Source** choose **GitHub Actions**. After the first push to `main` the site appears at `https://mkklosin.github.io/tabletop/`. Pushing is the user's decision; do not push.
+Tell the user: in GitHub → repo **Settings → Pages → Build and deployment → Source** choose **GitHub Actions**. After the first push to `main` the site appears at `https://kl0sin.github.io/tabletop/`. Pushing is the user's decision; do not push.
 
 ---
 

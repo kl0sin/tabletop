@@ -25,7 +25,7 @@ konfigurowalny per gra, tryb "ustal kolejność" w pickerze, historia na dashboa
 - PWA: `vite-plugin-pwa` – manifest (standalone, ikony) + service worker do pracy
   offline.
 - Deploy: GitHub Actions na push do `main` → testy → build → GitHub Pages.
-  `base: '/tabletop/'`, adres `https://mkklosin.github.io/tabletop/`.
+  `base: '/tabletop/'`, adres `https://kl0sin.github.io/tabletop/`.
 
 ## Struktura
 
