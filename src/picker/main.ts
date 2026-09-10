@@ -178,6 +178,23 @@ function reset(): void {
 
 again.addEventListener('click', reset);
 
+// Navigation links: with touch-action: none and pointer capture on the stage, some mobile
+// browsers are reluctant to synthesise a click for anchors. Navigate on pointerup as well;
+// a duplicate click to the same URL is harmless.
+for (const link of document.querySelectorAll<HTMLAnchorElement>('a.back, a.result__link')) {
+  let armed = false;
+  link.addEventListener('pointerdown', () => {
+    armed = true;
+  });
+  link.addEventListener('pointerup', () => {
+    if (armed) window.location.assign(link.href);
+    armed = false;
+  });
+  link.addEventListener('pointercancel', () => {
+    armed = false;
+  });
+}
+
 stage.addEventListener('pointerdown', (e) => {
   const target = e.target as HTMLElement;
   if (target.closest('.back, .result')) return;

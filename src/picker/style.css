@@ -27,7 +27,7 @@ body {
   border-radius: 999px;
   color: var(--muted);
   font-size: 14px;
-  z-index: 5;
+  z-index: 7;
 }
 
 .hint {
@@ -177,7 +177,12 @@ body {
   color: #0f1115;
   text-align: center;
   z-index: 6;
+  pointer-events: none; /* let the back link above receive taps */
   animation: fade-up 0.4s ease-out both;
+}
+
+.result > * {
+  pointer-events: auto;
 }
 
 .result__eyebrow {
