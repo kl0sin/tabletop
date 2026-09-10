@@ -8,10 +8,10 @@ Open it on your phone, add it to the home screen, and it works offline. Everythi
 
 ## What's inside
 
-| Instance | What it does |
-| --- | --- |
-| **Flip 7** | Round-by-round score counter for [Flip 7](https://boardgamegeek.com/boardgame/420087/flip-7). Type the score or tap the cards a player collected and the app computes it, including busts and the +15 bonus for seven unique cards. Tracks the dealer, supports undo, keeps a history of finished games. |
-| **Kto zaczyna?** | "Who starts?" picker. Everyone puts a finger on the screen, holds still for two seconds, and one finger gets picked with a short animation. |
+| Instance         | What it does                                                                                                                                                                                                                                                                                             |
+| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Flip 7**       | Round-by-round score counter for [Flip 7](https://boardgamegeek.com/boardgame/420087/flip-7). Type the score or tap the cards a player collected and the app computes it, including busts and the +15 bonus for seven unique cards. Tracks the dealer, supports undo, keeps a history of finished games. |
+| **Kto zaczyna?** | "Who starts?" picker. Everyone puts a finger on the screen, holds still for two seconds, and one finger gets picked with a short animation.                                                                                                                                                              |
 
 The dashboard lists the instances and shows which game has an unfinished session.
 
