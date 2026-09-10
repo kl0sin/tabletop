@@ -1,5 +1,5 @@
 import { standings, type Game } from '../game';
-import { esc } from './dom';
+import { esc, plural } from './dom';
 
 export interface HistoryProps {
   games: Game[];
@@ -25,14 +25,15 @@ export function renderHistory(root: HTMLElement, props: HistoryProps): void {
             <span>${dateText}</span>
             <button class="link" data-delete>Usuń</button>
           </div>
-          <strong>${winner ? `Wygrał(a) ${esc(winner.name)}` : 'Bez zwycięzcy'}</strong>
+          <strong>${winner ? `${esc(winner.name)} wygrywa` : 'Bez zwycięzcy'}</strong>
           <span class="history__line">${line}</span>
+          <span class="history__sub">${plural(g.rounds.length, 'runda', 'rundy', 'rund')} · do ${g.target}</span>
         </li>`;
     })
     .join('');
 
   root.innerHTML = `
-    <header class="bar">
+    <header class="bar bar--3">
       <button class="link" data-action="back">← Wróć</button>
       <h1>Historia</h1>
       <span></span>

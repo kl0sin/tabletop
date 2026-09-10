@@ -1,5 +1,5 @@
 import { standings, type Game } from '../game';
-import { esc } from './dom';
+import { esc, plural } from './dom';
 
 export interface EndProps {
   game: Game;
@@ -13,7 +13,10 @@ export function renderEnd(root: HTMLElement, props: EndProps): void {
   const winner = game.players.find((p) => p.id === game.winnerId) ?? table[0]!.player;
 
   root.innerHTML = `
-    <header class="bar"><h1>Flip 7</h1><span class="bar__sub">${game.rounds.length} rund</span></header>
+    <header class="bar">
+      <h1>Flip 7</h1>
+      <span class="bar__sub">${plural(game.rounds.length, 'runda', 'rundy', 'rund')} · do ${game.target}</span>
+    </header>
     <main class="screen">
       <div class="winner">
         <span>Wygrywa</span>
@@ -22,9 +25,9 @@ export function renderEnd(root: HTMLElement, props: EndProps): void {
       <ul class="scores">
         ${table
           .map(
-            (s) => `
-          <li class="scores__row">
-            <span>${esc(s.player.name)}</span>
+            (s, i) => `
+          <li class="scores__row ${i === 0 ? 'is-leader' : ''}">
+            <span class="scores__name"><span class="scores__place">${i + 1}.</span> ${esc(s.player.name)}</span>
             <span class="scores__total">${s.total}</span>
           </li>`,
           )

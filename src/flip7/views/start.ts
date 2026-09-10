@@ -9,7 +9,7 @@ export interface StartProps {
 export function renderStart(root: HTMLElement, props: StartProps): void {
   const initial = props.lastPlayers.length >= 2 ? props.lastPlayers : ['', ''];
   root.innerHTML = `
-    <header class="bar">
+    <header class="bar bar--3">
       <a class="link" href="../">← Tabletop</a>
       <h1>Flip 7</h1>
       <button class="link" data-action="history">Historia</button>

@@ -34,7 +34,15 @@ export function renderRound(root: HTMLElement, props: RoundProps): void {
   const player = game.players[draft.index]!;
   const result = scoreRound(draft.numbers, draft.modifiers);
   const value = currentValue(draft);
+  const isEmpty = draft.mode === 'keypad' && draft.input === '';
   const isBust = draft.mode === 'cards' ? result.busted : draft.input === '0';
+  const shown = isEmpty ? '–' : isBust && draft.mode === 'cards' ? 'BUST' : String(value);
+  const flags =
+    draft.mode === 'cards' && result.flip7Bonus
+      ? 'Flip 7! +15'
+      : draft.mode === 'keypad' && isBust
+        ? 'Bust · 0 punktów'
+        : '';
 
   root.innerHTML = `
     <header class="bar">
@@ -43,12 +51,12 @@ export function renderRound(root: HTMLElement, props: RoundProps): void {
     </header>
     <main class="screen">
       <p class="entry__who">${esc(player.name)}</p>
-      <div class="entry__value ${isBust ? 'is-bust' : ''}">${isBust && draft.mode === 'cards' ? 'BUST' : value}</div>
-      <div class="entry__flags">${draft.mode === 'cards' && result.flip7Bonus ? 'Flip 7! +15' : ''}</div>
+      <div class="entry__value ${isBust ? 'is-bust' : ''} ${isEmpty ? 'is-empty' : ''}">${shown}</div>
+      <div class="entry__flags ${flags.startsWith('Bust') ? 'is-bust' : ''}">${flags}</div>
       <div id="pad"></div>
       <div class="row">
         <button class="btn btn--ghost" data-action="toggle">${draft.mode === 'keypad' ? 'Policz z kart' : 'Wpisz ręcznie'}</button>
-        <button class="btn btn--primary" data-action="confirm">${draft.index + 1 < game.players.length ? 'Dalej' : 'Zakończ rundę'}</button>
+        <button class="btn btn--primary" data-action="confirm" ${isEmpty ? 'disabled' : ''}>${draft.index + 1 < game.players.length ? 'Dalej' : 'Zakończ rundę'}</button>
       </div>
     </main>`;
 
@@ -114,7 +122,7 @@ function renderKeypad(
 }
 
 function renderCards(pad: HTMLElement, draft: RoundDraft, onChange: (d: RoundDraft) => void): void {
-  pad.className = 'cards';
+  pad.className = 'cards-groups';
   const numberTiles = NUMBER_CARDS.map((n) => {
     const count = draft.numbers.filter((x) => x === n).length;
     const isOn = count >= 1;
@@ -125,7 +133,11 @@ function renderCards(pad: HTMLElement, draft: RoundDraft, onChange: (d: RoundDra
     (m) =>
       `<button class="card card--mod ${draft.modifiers.includes(m) ? 'is-on' : ''}" data-modifier="${m}">${m}</button>`,
   );
-  pad.innerHTML = [...numberTiles, ...modifierTiles].join('');
+  pad.innerHTML = `
+    <p class="cards__label">Karty liczbowe <small>drugie dotknięcie = duplikat</small></p>
+    <div class="cards">${numberTiles.join('')}</div>
+    <p class="cards__label">Modyfikatory</p>
+    <div class="cards cards--mods">${modifierTiles.join('')}</div>`;
 
   pad.addEventListener('click', (e) => {
     const btn = (e.target as HTMLElement).closest<HTMLElement>('.card');
