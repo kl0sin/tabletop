@@ -19,7 +19,16 @@
     <div id="stage" class="stage">
       <a class="back" href="../">← Tabletop</a>
       <p id="hint" class="hint">Połóżcie palce na ekranie</p>
+      <div class="progress" aria-hidden="true">
+        <div id="progress" class="progress__fill"></div>
+      </div>
       <p id="counter" class="counter" hidden></p>
+      <div id="result" class="result" hidden>
+        <p class="result__eyebrow">Wylosowano</p>
+        <h1 class="result__title">Zaczynasz!</h1>
+        <button id="again" class="result__btn" type="button">Losuj ponownie</button>
+        <a class="result__link" href="../">Wróć do Tabletop</a>
+      </div>
     </div>
     <script type="module" src="/src/picker/main.ts"></script>
   </body>

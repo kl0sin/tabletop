@@ -1,21 +1,38 @@
+body {
+  background: radial-gradient(120% 80% at 50% -20%, #1c2030 0%, var(--bg) 60%), var(--bg);
+  min-height: 100dvh;
+}
+
+.page {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: calc(var(--safe-top) + 32px) 20px calc(var(--safe-bottom) + 32px);
+}
+
 .header {
-  padding: calc(var(--safe-top) + 24px) 20px 8px;
+  margin-bottom: 20px;
 }
 
 .header__title {
   margin: 0;
-  font-size: 28px;
-  letter-spacing: 0.02em;
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.header__sub {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 15px;
 }
 
 .grid {
   display: grid;
   grid-template-columns: 1fr;
   gap: 14px;
-  padding: 12px 20px calc(var(--safe-bottom) + 24px);
 }
 
-@media (min-width: 480px) {
+@media (min-width: 720px) {
   .grid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -24,43 +41,84 @@
 .tile {
   position: relative;
   display: grid;
-  gap: 4px;
-  min-height: 120px;
-  padding: 18px;
-  background: var(--surface);
-  border-radius: var(--radius);
-  transition: transform 0.1s ease;
+  grid-template-columns: 56px 1fr auto;
+  align-items: center;
+  gap: 16px;
+  min-height: 96px;
+  padding: 18px 16px 18px 18px;
+  border-radius: 20px;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--accent) 18%, transparent) 0%, transparent 55%),
+    var(--surface);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--accent) 22%, transparent),
+    0 10px 30px -18px rgba(0, 0, 0, 0.8);
+  transition:
+    transform 0.12s ease,
+    filter 0.12s ease;
 }
 
 .tile:active {
   transform: scale(0.98);
-  background: var(--surface-2);
+  filter: brightness(0.92);
+}
+
+@media (hover: hover) {
+  .tile:hover {
+    filter: brightness(1.08);
+  }
 }
 
 .tile__icon {
-  font-size: 32px;
-  line-height: 1;
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--accent) 40%, transparent);
+}
+
+.tile__icon svg {
+  width: 34px;
+  height: 34px;
+}
+
+.tile__body {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
 }
 
 .tile__name {
-  font-size: 20px;
-  font-weight: 600;
+  font-size: 19px;
+  font-weight: 700;
 }
 
 .tile__desc {
   color: var(--muted);
   font-size: 14px;
+  line-height: 1.3;
+}
+
+.tile__chevron {
+  color: var(--muted);
+  font-size: 26px;
+  line-height: 1;
+  padding-right: 2px;
 }
 
 .tile__badge {
   position: absolute;
-  top: 14px;
+  top: 12px;
   right: 14px;
-  padding: 4px 10px;
+  padding: 3px 9px;
   border-radius: 999px;
   background: var(--accent);
-  color: var(--accent-ink);
-  font-size: 12px;
-  font-weight: 700;
+  color: #0f1115;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
 }

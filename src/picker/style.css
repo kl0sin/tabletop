@@ -13,72 +13,228 @@ body {
   position: fixed;
   inset: 0;
   overflow: hidden;
-  background: var(--bg);
-  transition: background 0.4s ease;
+  background: radial-gradient(90% 70% at 50% 40%, #1a1e29 0%, var(--bg) 70%), var(--bg);
 }
 
 .back {
   position: absolute;
-  top: calc(var(--safe-top) + 12px);
-  left: 16px;
-  padding: 10px 14px;
+  top: calc(var(--safe-top) + 10px);
+  left: 12px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 14px;
+  border-radius: 999px;
   color: var(--muted);
   font-size: 14px;
-  z-index: 2;
+  z-index: 5;
 }
 
 .hint {
   position: absolute;
   left: 24px;
   right: 24px;
-  top: 40%;
+  top: 38%;
   margin: 0;
   text-align: center;
   color: var(--muted);
-  font-size: 20px;
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
   pointer-events: none;
   transition: opacity 0.3s;
+}
+
+.hint.is-hidden {
+  opacity: 0;
 }
 
 .counter {
   position: absolute;
   left: 0;
   right: 0;
-  bottom: calc(var(--safe-bottom) + 24px);
+  bottom: calc(var(--safe-bottom) + 28px);
   margin: 0;
   text-align: center;
   color: var(--muted);
-  font-size: 16px;
+  font-size: 15px;
   pointer-events: none;
 }
 
-.finger {
+.progress {
   position: absolute;
-  width: 110px;
-  height: 110px;
-  margin: -55px 0 0 -55px;
-  border-radius: 50%;
-  border: 6px solid var(--finger-color);
-  background: color-mix(in srgb, var(--finger-color) 25%, transparent);
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: calc(var(--safe-bottom) + 5px);
+  padding-bottom: var(--safe-bottom);
+  background: rgba(255, 255, 255, 0.05);
   pointer-events: none;
-  transition:
-    opacity 0.25s,
-    transform 0.25s;
+}
+
+.progress__fill {
+  height: 5px;
+  width: 0;
+  background: var(--accent);
+  box-shadow: 0 0 14px var(--accent);
+}
+
+/* fingers */
+
+.finger {
+  --size: 112px;
+  position: absolute;
+  width: var(--size);
+  height: var(--size);
+  margin: calc(var(--size) / -2) 0 0 calc(var(--size) / -2);
+  border-radius: 50%;
+  border: 5px solid var(--finger-color);
+  background: radial-gradient(
+    circle at 50% 45%,
+    color-mix(in srgb, var(--finger-color) 55%, white 10%) 0%,
+    color-mix(in srgb, var(--finger-color) 30%, transparent) 45%,
+    color-mix(in srgb, var(--finger-color) 12%, transparent) 100%
+  );
+  box-shadow:
+    0 0 24px color-mix(in srgb, var(--finger-color) 55%, transparent),
+    inset 0 0 18px color-mix(in srgb, var(--finger-color) 40%, transparent);
+  pointer-events: none;
+  animation: enter 0.22s cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
+  z-index: 2;
 }
 
 .stage.is-armed .finger {
-  animation: pulse var(--pulse, 0.9s) ease-in-out infinite;
+  animation:
+    enter 0.22s cubic-bezier(0.2, 0.9, 0.3, 1.2) both,
+    pulse 0.9s ease-in-out infinite;
+}
+
+.stage.is-fast .finger {
+  animation:
+    enter 0.22s cubic-bezier(0.2, 0.9, 0.3, 1.2) both,
+    pulse 0.42s ease-in-out infinite;
 }
 
 .finger.is-out {
-  opacity: 0;
-  transform: scale(0.4);
+  animation: pop-out 0.36s ease-in forwards;
 }
 
 .finger.is-winner {
-  animation: none;
-  transform: scale(1.6);
+  animation: win 0.5s cubic-bezier(0.2, 0.9, 0.3, 1.25) forwards;
+  border-color: #fff;
+  background: color-mix(in srgb, var(--finger-color) 65%, white);
+  box-shadow:
+    0 0 0 12px rgba(255, 255, 255, 0.28),
+    0 18px 50px -10px rgba(0, 0, 0, 0.45);
+  z-index: 4;
+}
+
+.ripple {
+  --size: 112px;
+  position: absolute;
+  width: var(--size);
+  height: var(--size);
+  margin: calc(var(--size) / -2) 0 0 calc(var(--size) / -2);
+  border-radius: 50%;
+  border: 2px solid var(--finger-color);
+  pointer-events: none;
+  animation: ripple 0.9s ease-out forwards;
+  z-index: 1;
+}
+
+/* result */
+
+.flood {
+  position: absolute;
+  inset: 0;
   background: var(--finger-color);
+  clip-path: circle(0px at var(--x) var(--y));
+  transition: clip-path 0.65s cubic-bezier(0.3, 0.7, 0.2, 1);
+  pointer-events: none;
+  z-index: 3;
+}
+
+.flood.is-on {
+  clip-path: circle(160% at var(--x) var(--y));
+}
+
+.result[hidden] {
+  display: none;
+}
+
+.stage:has(.result:not([hidden])) .back {
+  color: #0f1115;
+}
+
+.result {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  align-content: end;
+  justify-items: center;
+  gap: 10px;
+  padding: 0 24px calc(var(--safe-bottom) + 40px);
+  color: #0f1115;
+  text-align: center;
+  z-index: 6;
+  animation: fade-up 0.4s ease-out both;
+}
+
+.result__eyebrow {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+.result__title {
+  margin: 0 0 18px;
+  font-size: clamp(44px, 12vw, 72px);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.result__btn {
+  min-height: 56px;
+  min-width: 240px;
+  padding: 0 28px;
+  border: 0;
+  border-radius: 999px;
+  background: #0f1115;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 700;
+  box-shadow: 0 12px 30px -12px rgba(0, 0, 0, 0.6);
+  cursor: pointer;
+}
+
+.result__btn:active {
+  transform: scale(0.97);
+}
+
+.result__link {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  font-size: 15px;
+  font-weight: 600;
+  opacity: 0.75;
+}
+
+/* keyframes */
+
+@keyframes enter {
+  from {
+    transform: scale(0.55);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 @keyframes pulse {
@@ -87,6 +243,69 @@ body {
     transform: scale(1);
   }
   50% {
-    transform: scale(1.25);
+    transform: scale(1.18);
+  }
+}
+
+@keyframes ripple {
+  from {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  to {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+}
+
+@keyframes pop-out {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+    filter: brightness(1);
+  }
+  25% {
+    transform: scale(1.22);
+    filter: brightness(1.6);
+  }
+  100% {
+    transform: scale(0.2);
+    opacity: 0;
+  }
+}
+
+@keyframes win {
+  0% {
+    transform: scale(1);
+  }
+  60% {
+    transform: scale(1.7);
+  }
+  100% {
+    transform: scale(1.45);
+  }
+}
+
+@keyframes fade-up {
+  from {
+    transform: translateY(16px);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .finger,
+  .stage.is-armed .finger,
+  .stage.is-fast .finger,
+  .ripple,
+  .result {
+    animation: none;
+  }
+  .flood {
+    transition: none;
   }
 }
